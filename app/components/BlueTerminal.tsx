@@ -81,6 +81,7 @@ const BlueTerminal: React.FC = () => {
   const [selectedContactIndex, setSelectedContactIndex] = useState(-1);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [lastTouchY, setLastTouchY] = useState<number | null>(null);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -156,18 +157,18 @@ const BlueTerminal: React.FC = () => {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
-    const touchY = touch.clientY;
-    setTouchStart(touchY);
+    setLastTouchY(touch.clientY);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStart) return;
+    if (!lastTouchY) return;
     
     const touch = e.touches[0];
     const currentY = touch.clientY;
-    const diff = touchStart - currentY;
+    const diff = lastTouchY - currentY;
+    const threshold = 20; // Smaller threshold for more responsive swipes
 
-    if (Math.abs(diff) > 50) { // threshold of 50px
+    if (Math.abs(diff) > threshold) {
       if (diff > 0) {
         // Swipe up
         if (currentView === 'menu') {
@@ -191,8 +192,13 @@ const BlueTerminal: React.FC = () => {
           );
         }
       }
-      setTouchStart(null);
+      // Update lastTouchY to enable continuous scrolling
+      setLastTouchY(currentY);
     }
+  };
+
+  const handleTouchEnd = () => {
+    setLastTouchY(null);
   };
 
   const handleCommand = (command: string) => {
@@ -251,6 +257,7 @@ const BlueTerminal: React.FC = () => {
       tabIndex={0}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {currentView === 'content' && (
         <button onClick={handleBack} className={styles.backButton}>
