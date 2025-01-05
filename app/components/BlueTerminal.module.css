@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background-color: #001933;
   color: #4da6ff;
   font-family: 'Roboto Mono', monospace;
@@ -15,6 +15,7 @@
   outline: none;
   text-align: center;
   min-height: 100vh;
+  padding-top: 100px; /* Add some space from top */
 }
 
 .asciiArt {
@@ -46,6 +47,7 @@
   justify-content: center;
   width: 100%;
   max-width: 600px;
+  margin-top: 0;
 }
 
 .outputLine {
@@ -146,7 +148,7 @@
 .heading {
   font-size: 48px;
   animation: shuffleFade 0.7s ease-in;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 @keyframes shuffleFade {
@@ -230,7 +232,7 @@
 
 .instructions {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 43, 77, 0.9);
@@ -239,6 +241,15 @@
   color: #4da6ff;
   animation: fadeOut 2s ease-in forwards;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.instructions span {
+  display: block;
 }
 
 @keyframes fadeOut {
@@ -251,5 +262,15 @@
   100% {
     opacity: 0;
   }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 600px;
+  gap: 20px;
 }
 

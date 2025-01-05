@@ -297,7 +297,8 @@ const BlueTerminal: React.FC = () => {
     >
       {showInstructions && (
         <div className={styles.instructions}>
-          Use arrow keys (or swipe) to navigate and Enter (or double tap) to select
+          <span>↕️ swipe up/down to navigate</span>
+          <span>👆 double tap to select</span>
         </div>
       )}
       {currentView === 'content' && (
@@ -305,71 +306,72 @@ const BlueTerminal: React.FC = () => {
           ←
         </button>
       )}
-      <h1 className={styles.heading}>
-        {heading}
-      </h1>
-      {currentView === 'menu' ? (
-        <div className={styles.intro}>
-          <p>welcome to my blue terminal portfolio. use arrow keys (or swipe) to navigate and double tap to select.</p>
-          <p>options:</p>
-          <ul>
-            {initialOptions.map((option, index) => (
-              <li key={index} className={index === selectedIndex ? styles.selected : ''}>
-                <span>{option.command}</span> - {option.description}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <div ref={outputRef} className={styles.output}>
-          {output.map((line, index) => {
-            if (line.startsWith('- ')) {
-              const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
-              return (
-                <div 
-                  key={index} 
-                  className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
-                >
-                  {line}
-                </div>
-              );
-            }
-            if (line.includes('email: Send')) {
-              return (
-                <a key={index} 
-                   href={`mailto:${portfolioData.contact.email}`} 
-                   className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}>
-                  Send Email
-                </a>
-              );
-            }
-            if (line.includes('github: GitHub')) {
-              return (
-                <a key={index} 
-                   href={portfolioData.contact.github} 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}>
-                  GitHub Profile
-                </a>
-              );
-            }
-            if (line.includes('linkedin: LinkedIn')) {
-              return (
-                <a key={index} 
-                   href={`https://${portfolioData.contact.linkedin}`} 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}>
-                  LinkedIn Profile
-                </a>
-              );
-            }
-            return <div key={index} className={styles.outputLine}>{line}</div>;
-          })}
-          <p className={styles.hint}>press esc to return to the main menu</p>
-        </div>
-      )}
+      <div className={styles.contentWrapper}>
+        <h1 className={styles.heading}>
+          {heading}
+        </h1>
+        {currentView === 'menu' ? (
+          <div className={styles.intro}>
+            <p>options:</p>
+            <ul>
+              {initialOptions.map((option, index) => (
+                <li key={index} className={index === selectedIndex ? styles.selected : ''}>
+                  <span>{option.command}</span> - {option.description}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div ref={outputRef} className={styles.output}>
+            {output.map((line, index) => {
+              if (line.startsWith('- ')) {
+                const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
+                return (
+                  <div 
+                    key={index} 
+                    className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
+                  >
+                    {line}
+                  </div>
+                );
+              }
+              if (line.includes('email: Send')) {
+                return (
+                  <a key={index} 
+                     href={`mailto:${portfolioData.contact.email}`} 
+                     className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}>
+                    Send Email
+                  </a>
+                );
+              }
+              if (line.includes('github: GitHub')) {
+                return (
+                  <a key={index} 
+                     href={portfolioData.contact.github} 
+                     target="_blank" 
+                     rel="noopener noreferrer" 
+                     className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}>
+                    GitHub Profile
+                  </a>
+                );
+              }
+              if (line.includes('linkedin: LinkedIn')) {
+                return (
+                  <a key={index} 
+                     href={`https://${portfolioData.contact.linkedin}`} 
+                     target="_blank" 
+                     rel="noopener noreferrer" 
+                     className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}>
+                    LinkedIn Profile
+                  </a>
+                );
+              }
+              return <div key={index} className={styles.outputLine}>{line}</div>;
+            })}
+            <p className={styles.hint}>press esc to return to the main menu</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
