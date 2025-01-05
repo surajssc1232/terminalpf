@@ -294,7 +294,7 @@ const handleTap = (e: React.TouchEvent) => {
         setOutput(prev => [...prev, `command not found: ${command}. use arrow keys to navigate and enter to select.`]);
     }
   };
-
+ 
   const handleBack = () => {
     setCurrentView('menu');
     setOutput([]);
