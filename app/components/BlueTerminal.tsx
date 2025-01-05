@@ -72,6 +72,8 @@ const scrambleText = (text: string, setter: (val: string) => void) => {
   }, 50);
 };
 
+const greetings = ['Suraj Singh', 'Developer', 'Designer', 'Creator'];
+
 const BlueTerminal: React.FC = () => {
   const [output, setOutput] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -84,6 +86,7 @@ const BlueTerminal: React.FC = () => {
   const [lastTouchY, setLastTouchY] = useState<number | null>(null);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -110,6 +113,20 @@ const BlueTerminal: React.FC = () => {
       setShowInstructions(false);
     }, 2000);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGreetingIndex(prevIndex => {
+        let newIndex = Math.floor(Math.random() * greetings.length);
+        while (newIndex === prevIndex) {
+          newIndex = Math.floor(Math.random() * greetings.length);
+        }
+        return newIndex;
+      });
+    }, 2300);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -308,7 +325,7 @@ const BlueTerminal: React.FC = () => {
       )}
       <div className={styles.contentWrapper}>
         <h1 className={styles.heading}>
-          {heading}
+          {greetings[currentGreetingIndex]}
         </h1>
         {currentView === 'menu' ? (
           <div className={styles.intro}>
