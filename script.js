@@ -1,6 +1,6 @@
 const portfolioData = {
     about: "hi, i'm a software developer with a passion for creating elegant and efficient solutions.",
-    skills: ["javascript", "html", "css", "python", "node.js", "sql"],
+    skills: ["Java", "html", "css", "python", "node.js", "sql"],
     projects: [
         { name: "project a", description: "a web application for managing tasks and projects." },
         { name: "project b", description: "a mobile app for tracking fitness goals and progress." },
