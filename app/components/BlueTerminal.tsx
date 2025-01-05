@@ -317,7 +317,6 @@ const BlueTerminal: React.FC = () => {
       )}
       {currentView === 'menu' ? (
         <div className={styles.intro}>
-          <p>welcome to my blue terminal portfolio. use arrow keys (or swipe) to navigate and double tap to select.</p>
           <p>options:</p>
           <ul>
             {initialOptions.map((option, index) => (

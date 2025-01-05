@@ -104,11 +104,23 @@ const BlueTerminal: React.FC = () => {
 
   return (
     <div className={styles.terminal}>
-
+      <pre className={styles.asciiArt}>
+{` _____                    _             _ 
+|_   _|__ _ __ _ __ ___ (_)_ __   __ _| |
+  | |/ _ \\ '__| '_ \` _ \\| | '_ \\ / _\` | |
+  | |  __/ |  | | | | | | | | | | (_| | |
+  |_|\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|
+                                          
+ ____            _    __       _ _       
+|  _ \\ ___  _ __| |_ / _| ___ | (_) ___  
+| |_) / _ \\| '__| __| |_ / _ \\| | |/ _ \\ 
+|  __/ (_) | |  | |_|  _| (_) | | | (_) |
+|_|   \\___/|_|   \\__|_|  \\___/|_|_|\\___/ 
+                                         `}
+      </pre>
       <div className={styles.intro}>
-        
+        <p>welcome to my blue terminal portfolio. type 'help' for available commands.</p>
         <p>initial options:</p>
-        <br />
         <ul>
           {initialOptions.map((option, index) => (
             <li key={index}>
