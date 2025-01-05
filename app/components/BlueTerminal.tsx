@@ -52,49 +52,28 @@ const shuffleString = (str: string) => {
 };
 
 const scrambleText = (text: string, setter: (val: string) => void) => {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  let count = 0;
-  const total = 10; // total scramble iterations
-
-  const scrambleInterval = setInterval(() => {
-    count++;
-    if (count >= total) {
-      clearInterval(scrambleInterval);
-      setter(text);
-    } else {
-      setter(
-        text
-          .split('')
-          .map(char => (char === ' ' ? ' ' : letters[Math.floor(Math.random() * letters.length)]))
-          .join('')
-      );
-    }
-  }, 50);
-};
-
-const scrambleTextOnHover = (text: string, setter: (val: string) => void) => {
-  const elementTextArray = text.split('');
-  const velocity = 50;
+  const chars = '!<>-_\\/[]{}—=+*^?#________';
   let iteration = 0;
+  const maxIterations = 12;
 
   const interval = setInterval(() => {
-    const randomText = elementTextArray.map((char, index) => {
-      if (index < iteration) {
-        return text[index];
-      }
-      return 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[
-        Math.floor(Math.random() * 52)
-      ];
-    }).join('');
+    setter(
+      text.split('')
+        .map((char, index) => {
+          if (char === ' ') return ' ';
+          if (index < iteration) return text[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        })
+        .join('')
+    );
 
-    setter(randomText);
     iteration += 1/3;
 
     if (iteration >= text.length) {
       clearInterval(interval);
       setter(text);
     }
-  }, velocity);
+  }, 50);
 
   return () => clearInterval(interval);
 };
@@ -127,8 +106,9 @@ const BlueTerminal: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      scrambleText('Suraj Singh', setHeading);
-    }, 3000);
+      const cleanup = scrambleText('Suraj Singh', setHeading);
+      return cleanup;
+    }, 5000); // Increased interval to 5 seconds
     return () => clearInterval(interval);
   }, []);
 
@@ -312,10 +292,6 @@ const BlueTerminal: React.FC = () => {
     setSelectedProjectIndex(-1);
   };
 
-  const handleHeadingHover = () => {
-    scrambleTextOnHover('Suraj Singh', setHeading);
-  };
-
   return (
     <div 
       className={`${styles.terminal} ${styles.responsive}`} 
@@ -337,12 +313,11 @@ const BlueTerminal: React.FC = () => {
           ←
         </button>
       )}
-      <h1 
-        className={styles.heading}
-        onMouseEnter={handleHeadingHover}
-      >
-        {heading}
-      </h1>
+      {currentView === 'menu' && (
+        <h1 className={styles.heading}>
+          {heading}
+        </h1>
+      )}
       {currentView === 'menu' ? (
         <div className={styles.intro}>
           <p>welcome to my blue terminal portfolio. use arrow keys (or swipe) to navigate and double tap to select.</p>

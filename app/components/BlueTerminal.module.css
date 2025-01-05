@@ -145,14 +145,13 @@
 
 .heading {
   font-size: 48px;
-  animation: shuffleFade 0.7s ease-in;
   margin-bottom: 20px;
-  cursor: pointer;
-  transition: letter-spacing 0.3s ease;
+  text-shadow: 0 0 5px #4da6ff;
+  transition: text-shadow 0.3s ease;
 }
 
 .heading:hover {
-  letter-spacing: 2px;
+  text-shadow: 0 0 8px #4da6ff, 0 0 12px #4da6ff;
 }
 
 @keyframes shuffleFade {
