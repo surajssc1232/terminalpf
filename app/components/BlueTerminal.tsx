@@ -289,7 +289,7 @@ const BlueTerminal: React.FC = () => {
     >
       {currentView === 'content' && (
         <button onClick={handleBack} className={styles.backButton}>
-          ← Back to Menu
+          ←
         </button>
       )}
       <h1 className={styles.heading}>

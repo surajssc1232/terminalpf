@@ -183,21 +183,19 @@
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: #002b4d;
-  border: 2px solid #4da6ff;
+  background: none;
+  border: none;
   color: #4da6ff;
-  padding: 12px 20px;
-  border-radius: 6px;
+  font-size: 32px;
   cursor: pointer;
   font-family: 'Roboto Mono', monospace;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   z-index: 100;
+  padding: 0;
 }
 
 .backButton:hover, .backButton:active {
-  background: #003366;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(77, 166, 255, 0.2);
+  transform: translateX(-5px);
 }
 
 @media (min-width: 769px) {
