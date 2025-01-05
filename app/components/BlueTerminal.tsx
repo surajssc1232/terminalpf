@@ -20,13 +20,13 @@ const portfolioData = {
     { 
       name: "Weather Dashboard", 
       description: "a machine learning model for predicting stock prices.",
-      github: "https://github.com/surajssc1232/WeatherDashboard"
+      github: "https://github.com/surajssc1232/weather_data"
     },
   ],
   contact: {
     email: "surajssc1232@gmail.com",
     github: "https://github.com/surajssc1232",
-    linkedin: "linkedin.com/in/developer"
+    linkedin: "https://www.linkedin.com/in/suraj-chauhan-aa8683217/"
   },
   articles: [
     { title: "Understanding React Hooks", link: "https://example.com/react-hooks" },
