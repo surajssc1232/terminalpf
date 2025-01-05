@@ -83,6 +83,7 @@ const BlueTerminal: React.FC = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [lastTouchY, setLastTouchY] = useState<number | null>(null);
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [showInstructions, setShowInstructions] = useState(true);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -102,6 +103,13 @@ const BlueTerminal: React.FC = () => {
       scrambleText('Suraj Singh', setHeading);
     }, 3000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInstructions(false);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -287,6 +295,11 @@ const BlueTerminal: React.FC = () => {
       onTouchCancel={handleTouchEnd}
       onClick={handleTap}
     >
+      {showInstructions && (
+        <div className={styles.instructions}>
+          Use arrow keys (or swipe) to navigate and Enter (or double tap) to select
+        </div>
+      )}
       {currentView === 'content' && (
         <button onClick={handleBack} className={styles.backButton}>
           ←

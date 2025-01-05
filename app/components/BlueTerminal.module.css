@@ -228,3 +228,28 @@
   }
 }
 
+.instructions {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 43, 77, 0.9);
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: #4da6ff;
+  animation: fadeOut 2s ease-in forwards;
+  z-index: 1000;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
