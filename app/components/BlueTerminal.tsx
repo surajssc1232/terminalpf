@@ -199,84 +199,62 @@ const BlueTerminal: React.FC = () => {
     setLastTouchY(touch.clientY);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!lastTouchY) return;
-    
-    const touch = e.touches[0];
-    const currentY = touch.clientY;
-    const diff = lastTouchY - currentY;
-    const threshold = 20; // Smaller threshold for more responsive swipes
+const handleTouchMove = (e: React.TouchEvent) => {
+  if (!lastTouchY) return;
+  
+  const touch = e.touches[0];
+  const currentY = touch.clientY;
+  const diff = lastTouchY - currentY;
+  const threshold = 20;
 
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        // Swipe up
-        if (currentView === 'menu') {
-          setSelectedIndex(prev => (prev < initialOptions.length - 1 ? prev + 1 : 0));
-        } else {
-          // Handle all content types
-          const contentLines = output.filter(line => line.startsWith('- '));
-          if (contentLines.length > 0) {
-            if (output.includes('CONTACT')) {
-              setSelectedContactIndex(prev => (prev < 2 ? prev + 1 : 0));
-            } else if (output.includes('PROJECTS')) {
-              setSelectedProjectIndex(prev => (prev < portfolioData.projects.length - 1 ? prev + 1 : 0));
-            } else {
-              setSelectedContentIndex(prev => (prev < contentLines.length - 1 ? prev + 1 : 0));
-            }
-          }
-        }
-      } else {
-        // Swipe down
-        if (currentView === 'menu') {
-          setSelectedIndex(prev => (prev > 0 ? prev - 1 : initialOptions.length - 1));
-        } else {
-          // Handle all content types
-          const contentLines = output.filter(line => line.startsWith('- '));
-          if (contentLines.length > 0) {
-            if (output.includes('CONTACT')) {
-              setSelectedContactIndex(prev => (prev > 0 ? prev - 1 : 2));
-            } else if (output.includes('PROJECTS')) {
-              setSelectedProjectIndex(prev => (prev > 0 ? prev - 1 : portfolioData.projects.length - 1));
-            } else {
-              setSelectedContentIndex(prev => (prev > 0 ? prev - 1 : contentLines.length - 1));
-            }
-          }
-        }
-      }
-      // Update lastTouchY to enable continuous scrolling
-      setLastTouchY(currentY);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setLastTouchY(null);
-  };
-
-  const handleTap = (e: React.TouchEvent) => {
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastTapTime;
-    
-    if (tapLength < 500 && tapLength > 0) {
-      // Double tap detected
+  if (Math.abs(diff) > threshold) {
+    if (diff > 0) {
+      // Swipe up
       if (currentView === 'menu') {
-        handleCommand(initialOptions[selectedIndex].command);
-        setCurrentView('content');
+        setSelectedIndex(prev => (prev < initialOptions.length - 1 ? prev + 1 : 0));
       } else {
         const contentLines = output.filter(line => line.startsWith('- '));
-        if (output.includes('CONTACT') && selectedContactIndex !== -1) {
-          const contactLinks = [
-            `mailto:${portfolioData.contact.email}`,
-            portfolioData.contact.github,
-            `https://${portfolioData.contact.linkedin}`
-          ];
-          window.open(contactLinks[selectedContactIndex], '_blank');
-        } else if (output.includes('PROJECTS') && selectedProjectIndex !== -1) {
-          window.open(portfolioData.projects[selectedProjectIndex].github, '_blank');
+        if (contentLines.length > 0) {
+          setSelectedContentIndex(prev => (prev < contentLines.length - 1 ? prev + 1 : 0));
+        }
+      }
+    } else {
+      // Swipe down
+      if (currentView === 'menu') {
+        setSelectedIndex(prev => (prev > 0 ? prev - 1 : initialOptions.length - 1));
+      } else {
+        const contentLines = output.filter(line => line.startsWith('- '));
+        if (contentLines.length > 0) {
+          setSelectedContentIndex(prev => (prev > 0 ? prev - 1 : contentLines.length - 1));
         }
       }
     }
-    setLastTapTime(currentTime);
-  };
+    setLastTouchY(currentY);
+  }
+};
+
+const handleTouchEnd = () => {
+  setLastTouchY(null);
+};
+
+const handleTap = (e: React.TouchEvent) => {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTapTime;
+  
+  if (tapLength < 500 && tapLength > 0) {
+    if (currentView === 'menu') {
+      handleCommand(initialOptions[selectedIndex].command);
+      setCurrentView('content');
+    } else {
+      const contentLines = output.filter(line => line.startsWith('- '));
+      if (contentLines.length > 0 && selectedContentIndex !== -1) {
+        const selectedLine = contentLines[selectedContentIndex];
+        handleContentSelect(selectedLine);
+      }
+    }
+  }
+  setLastTapTime(currentTime);
+};
 
   const handleCommand = (command: string) => {
     switch (command.trim()) {
