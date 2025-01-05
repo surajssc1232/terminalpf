@@ -317,7 +317,6 @@ const BlueTerminal: React.FC = () => {
       )}
       {currentView === 'menu' ? (
         <div className={styles.intro}>
-          <p>options:</p>
           <ul>
             {initialOptions.map((option, index) => (
               <li key={index} className={index === selectedIndex ? styles.selected : ''}>
