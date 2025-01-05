@@ -203,47 +203,23 @@ const BlueTerminal: React.FC = () => {
     setSelectedProjectIndex(-1);
   };
 
-  const handleItemClick = (index: number) => {
-    if (currentView === 'menu') {
-      setSelectedIndex(index);
-      handleCommand(initialOptions[index].command);
-      setCurrentView('content');
-    } else if (output.includes('contact:')) {
-      setSelectedContactIndex(index);
-      const contactLinks = [
-        `mailto:${portfolioData.contact.email}`,
-        portfolioData.contact.github,
-        `https://${portfolioData.contact.linkedin}`
-      ];
-      window.open(contactLinks[index], '_blank');
-    } else if (output.includes('projects:')) {
-      setSelectedProjectIndex(index);
-      window.open(portfolioData.projects[index].github, '_blank');
-    }
-  };
-
   return (
     <div className={`${styles.terminal} ${styles.responsive}`} tabIndex={0}>
       {currentView === 'content' && (
-        <div className={styles.mobileControls}>
-          <button onClick={handleBack} className={styles.backButton}>
-            ← Back
-          </button>
-        </div>
+        <button onClick={handleBack} className={styles.backButton}>
+          ← Back
+        </button>
       )}
       <h1 className={styles.heading}>
         {heading}
       </h1>
       {currentView === 'menu' ? (
         <div className={styles.intro}>
-          <p>welcome to my blue terminal portfolio. tap options to select:</p>
+          <p>welcome to my blue terminal portfolio. use arrow keys to navigate and enter to select an option.</p>
+          <p>options:</p>
           <ul>
             {initialOptions.map((option, index) => (
-              <li 
-                key={index} 
-                className={index === selectedIndex ? styles.selected : ''} 
-                onClick={() => handleItemClick(index)}
-              >
+              <li key={index} className={index === selectedIndex ? styles.selected : ''}>
                 <span>{option.command}</span> - {option.description}
               </li>
             ))}
@@ -258,7 +234,6 @@ const BlueTerminal: React.FC = () => {
                 <div 
                   key={index} 
                   className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
-                  onClick={() => projectIndex >= 0 && handleItemClick(projectIndex)}
                 >
                   {line}
                 </div>
@@ -266,40 +241,38 @@ const BlueTerminal: React.FC = () => {
             }
             if (line.includes('email: Send')) {
               return (
-                <div 
-                  key={index}
-                  onClick={() => handleItemClick(0)}
-                  className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}
-                >
+                <a key={index} 
+                   href={`mailto:${portfolioData.contact.email}`} 
+                   className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}>
                   Send Email
-                </div>
+                </a>
               );
             }
             if (line.includes('github: GitHub')) {
               return (
-                <div 
-                  key={index}
-                  onClick={() => handleItemClick(1)}
-                  className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}
-                >
+                <a key={index} 
+                   href={portfolioData.contact.github} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}>
                   GitHub Profile
-                </div>
+                </a>
               );
             }
             if (line.includes('linkedin: LinkedIn')) {
               return (
-                <div 
-                  key={index}
-                  onClick={() => handleItemClick(2)}
-                  className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}
-                >
+                <a key={index} 
+                   href={`https://${portfolioData.contact.linkedin}`} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}>
                   LinkedIn Profile
-                </div>
+                </a>
               );
             }
             return <div key={index} className={styles.outputLine}>{line}</div>;
           })}
-          <p className={styles.hint}>tap items to interact or press esc to return</p>
+          <p className={styles.hint}>press esc to return to the main menu</p>
         </div>
       )}
     </div>

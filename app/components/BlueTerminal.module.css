@@ -204,29 +204,3 @@
   }
 }
 
-.terminal li, .projectLine, .contactLine {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-@media (max-width: 768px) {
-  .terminal li, .projectLine, .contactLine {
-    padding: 12px 8px;
-    margin: 8px 0;
-  }
-
-  .hint {
-    margin-top: 30px;
-    padding: 10px;
-  }
-
-  .mobileControls {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    width: 100%;
-    padding: 10px;
-    background-color: #001933;
-  }
-}
-
