@@ -243,30 +243,28 @@ const BlueTerminal: React.FC = () => {
   };
 
   const handleCommand = (command: string) => {
-    setOutput(prev => [...prev, `$ ${command}`]);
-
     switch (command.trim()) {
       case 'about':
-        setOutput(prev => [...prev, portfolioData.about]);
+        setOutput(prev => [
+          'ABOUT',
+          portfolioData.about
+        ]);
         break;
       case 'skills':
         setOutput(prev => [
-          ...prev,
-          'skills:',
+          'SKILLS',
           ...portfolioData.skills.map(skill => `- ${skill}`)
         ]);
         break;
       case 'projects':
         setOutput(prev => [
-          ...prev,
-          'projects:',
+          'PROJECTS',
           ...portfolioData.projects.map(project => `- ${project.name}: ${project.description}`)
         ]);
         break;
       case 'contact':
         setOutput(prev => [
-          ...prev,
-          'contact:',
+          'CONTACT',
           'Use arrow keys to navigate and Enter to open link:',
           'email: Send Email',
           'github: GitHub Profile',
@@ -275,8 +273,7 @@ const BlueTerminal: React.FC = () => {
         break;
       case 'articles':
         setOutput(prev => [
-          ...prev,
-          'articles:',
+          'ARTICLES',
           ...portfolioData.articles.map(article => `- ${article.title}: ${article.link}`)
         ]);
         break;
@@ -333,6 +330,9 @@ const BlueTerminal: React.FC = () => {
       ) : (
         <div ref={outputRef} className={styles.output}>
           {output.map((line, index) => {
+            if (['ABOUT', 'SKILLS', 'PROJECTS', 'CONTACT', 'ARTICLES'].includes(line)) {
+              return <h2 key={index} className={styles.sectionHeading}>{line}</h2>;
+            }
             if (line.startsWith('- ')) {
               const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
               return (
