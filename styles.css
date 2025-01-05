@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Mono', monospace;
+    background-color: #001933;
+    color: #4da6ff;
+    text-transform: lowercase;
+}
+
+.terminal {
+    padding: 20px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.ascii-art {
+    font-size: 10px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    white-space: pre;
+}
+
+.intro {
+    margin-bottom: 20px;
+}
+
+.output {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    color: #00ccff;
+    margin-right: 8px;
+}
+
+input {
+    background-color: transparent;
+    border: none;
+    color: #4da6ff;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+    outline: none;
+}
+
+.output-line {
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    padding: 2px 4px;
+}
+
+.output-line:hover, .output-line.selected {
+    background-color: #002b4d;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 20px;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+li span {
+    color: #00ccff;
+}
+
+@media (min-width: 768px) {
+    .ascii-art {
+        font-size: 14px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #001933;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4da6ff;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #80bfff;
+}
+
