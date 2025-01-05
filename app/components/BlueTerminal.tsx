@@ -82,6 +82,7 @@ const BlueTerminal: React.FC = () => {
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [lastTouchY, setLastTouchY] = useState<number | null>(null);
+  const [lastTapTime, setLastTapTime] = useState(0);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -201,6 +202,31 @@ const BlueTerminal: React.FC = () => {
     setLastTouchY(null);
   };
 
+  const handleTap = (e: React.TouchEvent) => {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTapTime;
+    
+    if (tapLength < 500 && tapLength > 0) {
+      // Double tap detected
+      if (currentView === 'menu') {
+        handleCommand(initialOptions[selectedIndex].command);
+        setCurrentView('content');
+      } else if (currentView === 'content') {
+        if (output.includes('contact:') && selectedContactIndex !== -1) {
+          const contactLinks = [
+            `mailto:${portfolioData.contact.email}`,
+            portfolioData.contact.github,
+            `https://${portfolioData.contact.linkedin}`
+          ];
+          window.open(contactLinks[selectedContactIndex], '_blank');
+        } else if (output.includes('projects:') && selectedProjectIndex !== -1) {
+          window.open(portfolioData.projects[selectedProjectIndex].github, '_blank');
+        }
+      }
+    }
+    setLastTapTime(currentTime);
+  };
+
   const handleCommand = (command: string) => {
     setOutput(prev => [...prev, `$ ${command}`]);
 
@@ -258,6 +284,8 @@ const BlueTerminal: React.FC = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onClick={handleTap}
     >
       {currentView === 'content' && (
         <button onClick={handleBack} className={styles.backButton}>
@@ -269,7 +297,7 @@ const BlueTerminal: React.FC = () => {
       </h1>
       {currentView === 'menu' ? (
         <div className={styles.intro}>
-          <p>welcome to my blue terminal portfolio. use arrow keys to navigate and enter to select an option.</p>
+          <p>welcome to my blue terminal portfolio. use arrow keys (or swipe) to navigate and double tap to select.</p>
           <p>options:</p>
           <ul>
             {initialOptions.map((option, index) => (
