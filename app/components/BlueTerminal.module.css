@@ -1,18 +1,19 @@
 .terminal {
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: #001933;
   color: #4da6ff;
   font-family: 'Roboto Mono', monospace;
-  padding: 40px 20px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
   box-sizing: border-box;
   outline: none;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
   min-height: 100vh;
 }
 
