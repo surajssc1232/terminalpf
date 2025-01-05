@@ -72,7 +72,32 @@ const scrambleText = (text: string, setter: (val: string) => void) => {
   }, 50);
 };
 
-const greetings = ['Suraj Singh', 'Developer', 'Designer', 'Creator'];
+const scrambleTextOnHover = (text: string, setter: (val: string) => void) => {
+  const elementTextArray = text.split('');
+  const velocity = 50;
+  let iteration = 0;
+
+  const interval = setInterval(() => {
+    const randomText = elementTextArray.map((char, index) => {
+      if (index < iteration) {
+        return text[index];
+      }
+      return 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[
+        Math.floor(Math.random() * 52)
+      ];
+    }).join('');
+
+    setter(randomText);
+    iteration += 1/3;
+
+    if (iteration >= text.length) {
+      clearInterval(interval);
+      setter(text);
+    }
+  }, velocity);
+
+  return () => clearInterval(interval);
+};
 
 const BlueTerminal: React.FC = () => {
   const [output, setOutput] = useState<string[]>([]);
@@ -86,7 +111,6 @@ const BlueTerminal: React.FC = () => {
   const [lastTouchY, setLastTouchY] = useState<number | null>(null);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [showInstructions, setShowInstructions] = useState(true);
-  const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -113,20 +137,6 @@ const BlueTerminal: React.FC = () => {
       setShowInstructions(false);
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentGreetingIndex(prevIndex => {
-        let newIndex = Math.floor(Math.random() * greetings.length);
-        while (newIndex === prevIndex) {
-          newIndex = Math.floor(Math.random() * greetings.length);
-        }
-        return newIndex;
-      });
-    }, 2300);
-
-    return () => clearInterval(interval);
   }, []);
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -302,6 +312,10 @@ const BlueTerminal: React.FC = () => {
     setSelectedProjectIndex(-1);
   };
 
+  const handleHeadingHover = () => {
+    scrambleTextOnHover('Suraj Singh', setHeading);
+  };
+
   return (
     <div 
       className={`${styles.terminal} ${styles.responsive}`} 
@@ -323,72 +337,74 @@ const BlueTerminal: React.FC = () => {
           ←
         </button>
       )}
-      <div className={styles.contentWrapper}>
-        <h1 className={styles.heading}>
-          {greetings[currentGreetingIndex]}
-        </h1>
-        {currentView === 'menu' ? (
-          <div className={styles.intro}>
-            <p>options:</p>
-            <ul>
-              {initialOptions.map((option, index) => (
-                <li key={index} className={index === selectedIndex ? styles.selected : ''}>
-                  <span>{option.command}</span> - {option.description}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div ref={outputRef} className={styles.output}>
-            {output.map((line, index) => {
-              if (line.startsWith('- ')) {
-                const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
-                return (
-                  <div 
-                    key={index} 
-                    className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
-                  >
-                    {line}
-                  </div>
-                );
-              }
-              if (line.includes('email: Send')) {
-                return (
-                  <a key={index} 
-                     href={`mailto:${portfolioData.contact.email}`} 
-                     className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}>
-                    Send Email
-                  </a>
-                );
-              }
-              if (line.includes('github: GitHub')) {
-                return (
-                  <a key={index} 
-                     href={portfolioData.contact.github} 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}>
-                    GitHub Profile
-                  </a>
-                );
-              }
-              if (line.includes('linkedin: LinkedIn')) {
-                return (
-                  <a key={index} 
-                     href={`https://${portfolioData.contact.linkedin}`} 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}>
-                    LinkedIn Profile
-                  </a>
-                );
-              }
-              return <div key={index} className={styles.outputLine}>{line}</div>;
-            })}
-            <p className={styles.hint}>press esc to return to the main menu</p>
-          </div>
-        )}
-      </div>
+      <h1 
+        className={styles.heading}
+        onMouseEnter={handleHeadingHover}
+      >
+        {heading}
+      </h1>
+      {currentView === 'menu' ? (
+        <div className={styles.intro}>
+          <p>welcome to my blue terminal portfolio. use arrow keys (or swipe) to navigate and double tap to select.</p>
+          <p>options:</p>
+          <ul>
+            {initialOptions.map((option, index) => (
+              <li key={index} className={index === selectedIndex ? styles.selected : ''}>
+                <span>{option.command}</span> - {option.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div ref={outputRef} className={styles.output}>
+          {output.map((line, index) => {
+            if (line.startsWith('- ')) {
+              const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
+              return (
+                <div 
+                  key={index} 
+                  className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
+                >
+                  {line}
+                </div>
+              );
+            }
+            if (line.includes('email: Send')) {
+              return (
+                <a key={index} 
+                   href={`mailto:${portfolioData.contact.email}`} 
+                   className={`${styles.contactLine} ${selectedContactIndex === 0 ? styles.selected : ''}`}>
+                  Send Email
+                </a>
+              );
+            }
+            if (line.includes('github: GitHub')) {
+              return (
+                <a key={index} 
+                   href={portfolioData.contact.github} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className={`${styles.contactLine} ${selectedContactIndex === 1 ? styles.selected : ''}`}>
+                  GitHub Profile
+                </a>
+              );
+            }
+            if (line.includes('linkedin: LinkedIn')) {
+              return (
+                <a key={index} 
+                   href={`https://${portfolioData.contact.linkedin}`} 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   className={`${styles.contactLine} ${selectedContactIndex === 2 ? styles.selected : ''}`}>
+                  LinkedIn Profile
+                </a>
+              );
+            }
+            return <div key={index} className={styles.outputLine}>{line}</div>;
+          })}
+          <p className={styles.hint}>press esc to return to the main menu</p>
+        </div>
+      )}
     </div>
   );
 };
