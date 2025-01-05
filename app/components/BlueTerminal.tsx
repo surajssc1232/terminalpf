@@ -5,7 +5,7 @@ import styles from './BlueTerminal.module.css';
 
 const portfolioData = {
   about: "hi, i'm a software developer with a passion for creating elegant and efficient solutions.",
-  skills: ["javascript", "typescript", "react", "node.js", "python", "sql"],
+  skills: ["SpringBoot", "Java", "Python", "Flask", "Docker", "PostgreSQL"],
   projects: [
     { 
       name: "TuneMerge", 
