@@ -80,6 +80,7 @@ const BlueTerminal: React.FC = () => {
   const [heading, setHeading] = useState('Suraj Singh');
   const [selectedContactIndex, setSelectedContactIndex] = useState(-1);
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(-1);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -153,6 +154,47 @@ const BlueTerminal: React.FC = () => {
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    const touchY = touch.clientY;
+    setTouchStart(touchY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+    
+    const touch = e.touches[0];
+    const currentY = touch.clientY;
+    const diff = touchStart - currentY;
+
+    if (Math.abs(diff) > 50) { // threshold of 50px
+      if (diff > 0) {
+        // Swipe up
+        if (currentView === 'menu') {
+          setSelectedIndex(prev => (prev < initialOptions.length - 1 ? prev + 1 : 0));
+        } else if (output.includes('contact:')) {
+          setSelectedContactIndex(prev => (prev < 2 ? prev + 1 : 0));
+        } else if (output.includes('projects:')) {
+          setSelectedProjectIndex(prev => 
+            (prev < portfolioData.projects.length - 1 ? prev + 1 : 0)
+          );
+        }
+      } else {
+        // Swipe down
+        if (currentView === 'menu') {
+          setSelectedIndex(prev => (prev > 0 ? prev - 1 : initialOptions.length - 1));
+        } else if (output.includes('contact:')) {
+          setSelectedContactIndex(prev => (prev > 0 ? prev - 1 : 2));
+        } else if (output.includes('projects:')) {
+          setSelectedProjectIndex(prev => 
+            (prev > 0 ? prev - 1 : portfolioData.projects.length - 1)
+          );
+        }
+      }
+      setTouchStart(null);
+    }
+  };
+
   const handleCommand = (command: string) => {
     setOutput(prev => [...prev, `$ ${command}`]);
 
@@ -204,10 +246,15 @@ const BlueTerminal: React.FC = () => {
   };
 
   return (
-    <div className={`${styles.terminal} ${styles.responsive}`} tabIndex={0}>
+    <div 
+      className={`${styles.terminal} ${styles.responsive}`} 
+      tabIndex={0}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+    >
       {currentView === 'content' && (
         <button onClick={handleBack} className={styles.backButton}>
-          ← Back
+          ← Back to Menu
         </button>
       )}
       <h1 className={styles.heading}>
