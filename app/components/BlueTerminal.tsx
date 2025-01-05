@@ -90,6 +90,7 @@ const BlueTerminal: React.FC = () => {
   const [lastTouchY, setLastTouchY] = useState<number | null>(null);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [selectedContentIndex, setSelectedContentIndex] = useState(-1);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -137,37 +138,59 @@ const BlueTerminal: React.FC = () => {
         e.preventDefault();
         setCurrentView('menu');
         setOutput([]);
-        setSelectedContactIndex(-1);
-        setSelectedProjectIndex(-1);
-      } else if (output.includes('contact:')) {
-        // Contact page navigation
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          setSelectedContactIndex(prev => (prev > 0 ? prev - 1 : 2));
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          setSelectedContactIndex(prev => (prev < 2 ? prev + 1 : 0));
-        } else if (e.key === 'Enter' && selectedContactIndex !== -1) {
-          e.preventDefault();
-          const contactLinks = [
-            `mailto:${portfolioData.contact.email}`,
-            portfolioData.contact.github,
-            `https://${portfolioData.contact.linkedin}`
-          ];
-          window.open(contactLinks[selectedContactIndex], '_blank');
-        }
-      } else if (output.includes('projects:')) {
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          setSelectedProjectIndex(prev => (prev > 0 ? prev - 1 : portfolioData.projects.length - 1));
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          setSelectedProjectIndex(prev => (prev < portfolioData.projects.length - 1 ? prev + 1 : 0));
-        } else if (e.key === 'Enter' && selectedProjectIndex !== -1) {
-          e.preventDefault();
-          window.open(portfolioData.projects[selectedProjectIndex].github, '_blank');
+        setSelectedContentIndex(-1);
+      } else {
+        const contentLines = output.filter(line => line.startsWith('- '));
+        if (contentLines.length > 0) {
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setSelectedContentIndex(prev => (prev > 0 ? prev - 1 : contentLines.length - 1));
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setSelectedContentIndex(prev => (prev < contentLines.length - 1 ? prev + 1 : 0));
+          } else if (e.key === 'Enter' && selectedContentIndex !== -1) {
+            e.preventDefault();
+            const selectedLine = contentLines[selectedContentIndex];
+            
+            if (output.includes('CONTACT')) {
+              const contactLinks = [
+                `mailto:${portfolioData.contact.email}`,
+                portfolioData.contact.github,
+                `https://${portfolioData.contact.linkedin}`
+              ];
+              window.open(contactLinks[selectedContentIndex], '_blank');
+            } else if (output.includes('PROJECTS')) {
+              // Extract the project name from the selected line
+              const projectName = selectedLine.split(':')[0].replace('- ', '').trim();
+              const project = portfolioData.projects.find(p => p.name === projectName);
+              if (project) {
+                window.open(project.github, '_blank');
+              }
+            } else if (output.includes('ARTICLES')) {
+              const articleTitle = selectedLine.split(':')[0].replace('- ', '').trim();
+              const article = portfolioData.articles.find(a => a.title === articleTitle);
+              if (article) {
+                window.open(article.link, '_blank');
+              }
+            }
+          }
         }
       }
+    }
+  };
+
+  const handleContentSelect = (selectedLine: string) => {
+    if (output.includes('CONTACT')) {
+      const contactLinks = [
+        `mailto:${portfolioData.contact.email}`,
+        portfolioData.contact.github,
+        `https://${portfolioData.contact.linkedin}`
+      ];
+      window.open(contactLinks[selectedContentIndex], '_blank');
+    } else if (output.includes('PROJECTS')) {
+      window.open(portfolioData.projects[selectedContentIndex].github, '_blank');
+    } else if (output.includes('ARTICLES')) {
+      window.open(portfolioData.articles[selectedContentIndex].link, '_blank');
     }
   };
 
@@ -189,23 +212,35 @@ const BlueTerminal: React.FC = () => {
         // Swipe up
         if (currentView === 'menu') {
           setSelectedIndex(prev => (prev < initialOptions.length - 1 ? prev + 1 : 0));
-        } else if (output.includes('contact:')) {
-          setSelectedContactIndex(prev => (prev < 2 ? prev + 1 : 0));
-        } else if (output.includes('projects:')) {
-          setSelectedProjectIndex(prev => 
-            (prev < portfolioData.projects.length - 1 ? prev + 1 : 0)
-          );
+        } else {
+          // Handle all content types
+          const contentLines = output.filter(line => line.startsWith('- '));
+          if (contentLines.length > 0) {
+            if (output.includes('CONTACT')) {
+              setSelectedContactIndex(prev => (prev < 2 ? prev + 1 : 0));
+            } else if (output.includes('PROJECTS')) {
+              setSelectedProjectIndex(prev => (prev < portfolioData.projects.length - 1 ? prev + 1 : 0));
+            } else {
+              setSelectedContentIndex(prev => (prev < contentLines.length - 1 ? prev + 1 : 0));
+            }
+          }
         }
       } else {
         // Swipe down
         if (currentView === 'menu') {
           setSelectedIndex(prev => (prev > 0 ? prev - 1 : initialOptions.length - 1));
-        } else if (output.includes('contact:')) {
-          setSelectedContactIndex(prev => (prev > 0 ? prev - 1 : 2));
-        } else if (output.includes('projects:')) {
-          setSelectedProjectIndex(prev => 
-            (prev > 0 ? prev - 1 : portfolioData.projects.length - 1)
-          );
+        } else {
+          // Handle all content types
+          const contentLines = output.filter(line => line.startsWith('- '));
+          if (contentLines.length > 0) {
+            if (output.includes('CONTACT')) {
+              setSelectedContactIndex(prev => (prev > 0 ? prev - 1 : 2));
+            } else if (output.includes('PROJECTS')) {
+              setSelectedProjectIndex(prev => (prev > 0 ? prev - 1 : portfolioData.projects.length - 1));
+            } else {
+              setSelectedContentIndex(prev => (prev > 0 ? prev - 1 : contentLines.length - 1));
+            }
+          }
         }
       }
       // Update lastTouchY to enable continuous scrolling
@@ -226,15 +261,16 @@ const BlueTerminal: React.FC = () => {
       if (currentView === 'menu') {
         handleCommand(initialOptions[selectedIndex].command);
         setCurrentView('content');
-      } else if (currentView === 'content') {
-        if (output.includes('contact:') && selectedContactIndex !== -1) {
+      } else {
+        const contentLines = output.filter(line => line.startsWith('- '));
+        if (output.includes('CONTACT') && selectedContactIndex !== -1) {
           const contactLinks = [
             `mailto:${portfolioData.contact.email}`,
             portfolioData.contact.github,
             `https://${portfolioData.contact.linkedin}`
           ];
           window.open(contactLinks[selectedContactIndex], '_blank');
-        } else if (output.includes('projects:') && selectedProjectIndex !== -1) {
+        } else if (output.includes('PROJECTS') && selectedProjectIndex !== -1) {
           window.open(portfolioData.projects[selectedProjectIndex].github, '_blank');
         }
       }
@@ -265,10 +301,9 @@ const BlueTerminal: React.FC = () => {
       case 'contact':
         setOutput(prev => [
           'CONTACT',
-          'Use arrow keys to navigate and Enter to open link:',
-          'email: Send Email',
-          'github: GitHub Profile',
-          'linkedin: LinkedIn Profile'
+          '- Email',
+          '- GitHub',
+          '- LinkedIn'
         ]);
         break;
       case 'articles':
@@ -332,11 +367,15 @@ const BlueTerminal: React.FC = () => {
               return <h2 key={index} className={styles.sectionHeading}>{line}</h2>;
             }
             if (line.startsWith('- ')) {
-              const projectIndex = output.indexOf(line) - 2; // Adjust for header lines
+              const contentIndex = output.filter(l => l.startsWith('- ')).indexOf(line);
               return (
                 <div 
                   key={index} 
-                  className={`${styles.projectLine} ${projectIndex === selectedProjectIndex ? styles.selected : ''}`}
+                  className={`${styles.contentLine} ${contentIndex === selectedContentIndex ? styles.selected : ''}`}
+                  onClick={() => {
+                    setSelectedContentIndex(contentIndex);
+                    handleContentSelect(line);
+                  }}
                 >
                   {line}
                 </div>

@@ -163,49 +163,44 @@
   }
 }
 
-.projectLine {
-  background-color: #002b4d;
-  border: 2px solid #4da6ff;
-  border-radius: 6px;
-  padding: 8px;
-  margin: 6px 0;
-  width: 100%;
-  text-align: center;
-}
-
-.contactLine {
+.projectLine, .contactLine, .contentLine {
   display: block;
-  background-color: #002b4d;
-  border: 2px solid #4da6ff;
-  border-radius: 6px;
-  padding: 8px;
-  margin: 6px 0;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 4px;
+  padding: 2px 4px;
+  transition: background-color 0.2s ease;
   text-decoration: none;
   color: #4da6ff;
-  transition: all 0.3s ease;
   position: relative;
-  outline: none;
+}
+
+.projectLine.selected, 
+.contactLine.selected, 
+.contentLine.selected {
+  background-color: #002b4d;
   width: 100%;
-  text-align: center;
+}
+
+/* Remove these styles as they're no longer needed */
+.projectLine, .contactLine, .contentLine {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
 }
 
 .contactLine:hover {
-  background-color: #003366;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(77, 166, 255, 0.2);
+  background-color: #002b4d;
+  transform: none;
+  box-shadow: none;
 }
 
-.contactLine.selected {
-  background-color: #003366;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(77, 166, 255, 0.2);
-}
-
-.contactLine.selected::before {
-  content: '>';
-  position: absolute;
-  left: -20px;
-  color: #00ccff;
+/* Update the selected indicator to match menu style */
+.projectLine.selected::before, 
+.contactLine.selected::before, 
+.contentLine.selected::before {
+  content: none;
 }
 
 .backButton {
@@ -282,4 +277,22 @@
     font-size: 24px;
   }
 }
+
+/* ...existing code... */
+.contentLine {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 4px;
+  padding: 8px 12px;
+  transition: background-color 0.2s ease;
+  color: #4da6ff;
+  cursor: pointer;
+  position: relative;
+}
+
+.contentLine.selected {
+  background-color: #002b4d;
+}
+/* ...existing code... */
 
